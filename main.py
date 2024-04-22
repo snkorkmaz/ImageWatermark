@@ -26,13 +26,10 @@ def upload_image():
         image = image.resize((300, 300), PIL.Image.Resampling.LANCZOS)
         img = ImageTk.PhotoImage(image)
 
-        # Create a canvas to display the image
-        canvas = Canvas(window, width=image.width, height=image.height, bg=BEIGE, highlightthickness=0)
-        canvas.create_image(0, 0, anchor='nw', image=img)
+        # Display original image
+        original_image_canvas.create_image(0, 0, anchor='nw', image=img)
 
-        # Keep a reference to the image to prevent garbage collection
-        canvas.image = img
-        canvas.grid(column=1, row=1, pady=50)
+
 
 
 def choose_filepath(event):
@@ -81,13 +78,18 @@ def add_watermark():
     # Convert the resized image to a Tkinter-compatible format
     displayed_watermark_img = ImageTk.PhotoImage(displayed_image)
 
-    # Create a canvas to display the image
-    canvas = Canvas(window, width=300, height=300, bg=BEIGE, highlightthickness=0)
-    canvas.create_image(0, 0, anchor='nw', image=displayed_watermark_img)
-    canvas.grid(column=2, row=1, pady=50)
+    # Display watermarked image
+    watermarked_image_canvas.create_image(0, 0, anchor='nw', image=displayed_watermark_img)
+
+    # DOWNLOAD BUTTON
+    download_image_button = CTkButton(window, command=add_watermark, text="Download Image")
+    download_image_button.configure(text_color="white", fg_color=ORANGE, bg_color=BEIGE, hover_color=LIGHT_BLUE,
+                             corner_radius=50, width=220,
+                             font=(FONT_NAME, 15, "bold"))
+    download_image_button.grid(column=2, row=5, pady=50)
 
     # Keep a reference to the image to prevent garbage collection
-    canvas.displayed_watermark_img = displayed_watermark_img
+    watermarked_image_canvas.displayed_watermark_img = displayed_watermark_img
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -95,6 +97,7 @@ def add_watermark():
 # CREATE A WINDOW
 window = Tk()
 window.title("Image Watermark")
+window.geometry("900x800")
 window.config(padx=50, pady=50, bg=BEIGE)
 
 # Create a custom style for the entry widget
@@ -105,6 +108,21 @@ style.configure('Custom.TEntry', bordercolor=BLUE, borderwidth=3, relief='solid'
 # CREATE HEADER LABEL
 heading = Label(text="Add Watermark To Your Image", fg=BLUE, bg=BEIGE, font=(FONT_NAME, 35, "bold"))
 heading.grid(column=1, row=0, columnspan=4, pady=50)
+
+# CREATE IMAGE ICON
+image_icon = Image.open("static/assets/img/img_icon.png")
+image_icon = image_icon.resize((300, 300), PIL.Image.Resampling.LANCZOS)
+img_icon = ImageTk.PhotoImage(image_icon)
+
+# CREATE CANVAS TO DISPLAY ORIGINAL IMAGE
+original_image_canvas = Canvas(window, width=300, height=300, bg=BEIGE, highlightthickness=0)
+original_image_canvas.create_image(0, 0, anchor='nw', image=img_icon)
+original_image_canvas.grid(column=1, row=1, pady=50)
+
+# CREATE CANVAS TO DISPLAY WATERMARKED IMAGE
+watermarked_image_canvas = Canvas(window, width=300, height=300, bg=BEIGE, highlightthickness=0)
+watermarked_image_canvas.create_image(0, 0, anchor='nw', image=img_icon)
+watermarked_image_canvas.grid(column=2, row=1, pady=50)
 
 # CREATE ENTRY FIELD FOR CHOOSING THE FILE PATH
 entry_field = ttk.Entry(window, width=50, style='Custom.TEntry')
