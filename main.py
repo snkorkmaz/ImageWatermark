@@ -1,8 +1,11 @@
 from tkinter import *
 import time
-from tkinter import filedialog
+from tkinter import filedialog, ttk
+from tkinter.ttk import Style
+
 import PIL
 from PIL import Image, ImageTk, ImageFont, ImageDraw
+from customtkinter import CTkButton
 
 # ---------------------------- CONSTANTS ------------------------------- #
 
@@ -20,7 +23,7 @@ def upload_image():
     if image_file_path:
         # Open the image file
         image = Image.open(image_file_path)
-        image = image.resize((200, 200), PIL.Image.Resampling.LANCZOS)
+        image = image.resize((300, 300), PIL.Image.Resampling.LANCZOS)
         img = ImageTk.PhotoImage(image)
 
         # Create a canvas to display the image
@@ -29,7 +32,7 @@ def upload_image():
 
         # Keep a reference to the image to prevent garbage collection
         canvas.image = img
-        canvas.grid(column=1, row=1)
+        canvas.grid(column=1, row=1, pady=50)
 
 
 def choose_filepath(event):
@@ -81,7 +84,7 @@ def add_watermark():
     # Create a canvas to display the image
     canvas = Canvas(window, width=300, height=300, bg=BEIGE, highlightthickness=0)
     canvas.create_image(0, 0, anchor='nw', image=displayed_watermark_img)
-    canvas.grid(column=2, row=1)
+    canvas.grid(column=2, row=1, pady=50)
 
     # Keep a reference to the image to prevent garbage collection
     canvas.displayed_watermark_img = displayed_watermark_img
@@ -94,27 +97,39 @@ window = Tk()
 window.title("Image Watermark")
 window.config(padx=50, pady=50, bg=BEIGE)
 
+# Create a custom style for the entry widget
+style = Style()
+style.configure('Custom.TEntry', bordercolor=BLUE, borderwidth=3, relief='solid', fieldbackground='white',
+                foreground=ORANGE, padding=5, focuscolor=LIGHT_BLUE)  # Adjust as needed
+
 # CREATE HEADER LABEL
 heading = Label(text="Add Watermark To Your Image", fg=BLUE, bg=BEIGE, font=(FONT_NAME, 35, "bold"))
 heading.grid(column=1, row=0, columnspan=4, pady=50)
 
 # CREATE ENTRY FIELD FOR CHOOSING THE FILE PATH
-entry_field = Entry(window, width=50)
+entry_field = ttk.Entry(window, width=50, style='Custom.TEntry')
 entry_field.grid(row=2, column=1, padx=10, pady=10)
 
 # Bind the upload_image function to the entry field
 entry_field.bind("<Button-1>", choose_filepath)
 
 # UPLOAD BUTTON
-image_upload_button = Button(window, command=upload_image, text="Upload")
+image_upload_button = CTkButton(window, command=upload_image, text="Upload")
+image_upload_button.configure(text_color="white", fg_color=BLUE, bg_color=BEIGE, hover_color=ORANGE,
+                              corner_radius=50, width= 220,
+                              font=(FONT_NAME, 15, "bold"))
 image_upload_button.grid(column=2, row=2)
 
 # CREATE ENTRY FIELD FOR WATERMARK TEXT
-watermark_entry_field = Entry(window, width=50)
+watermark_entry_field = ttk.Entry(window, width=50, style='Custom.TEntry')
 watermark_entry_field.grid(row=3, column=1, padx=10, pady=10)
 
 # ADD WATERMARK BUTTON
-add_watermark_button = Button(window, command=add_watermark, text="Add Watermark")
+add_watermark_button = CTkButton(window, command=add_watermark, text="Add Watermark")
+add_watermark_button.configure(text_color="white", fg_color=BLUE, bg_color=BEIGE, hover_color=ORANGE,
+                               corner_radius=50, width=220,
+                               font=(FONT_NAME, 15, "bold"))
 add_watermark_button.grid(column=2, row=3)
+
 
 window.mainloop()
