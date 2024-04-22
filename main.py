@@ -1,10 +1,8 @@
 import os
 import shutil
 from tkinter import *
-import time
 from tkinter import filedialog, ttk
 from tkinter.ttk import Style
-
 import PIL
 from PIL import Image, ImageTk, ImageFont, ImageDraw
 from customtkinter import CTkButton
@@ -17,11 +15,12 @@ BLUE = "#51829B"
 ORANGE = "#F6995C"
 FONT_NAME = "Arial"
 
-# Initialize global variables for canvases and image icons
+# Initialize global variables
 original_image_canvas = None
 watermarked_image_canvas = None
 download_image_button = None
 img_icon = None
+download_successful_label = None
 
 
 # ---------------------------- FUNCTIONS ------------------------------- #
@@ -48,15 +47,27 @@ def choose_filepath(event):
     Opens a file dialog to allow the user to choose a file path and returns the selected file path, or an empty string
     if no file is selected.
     """
-    global image_file_path
+    global image_file_path, original_image_canvas, watermarked_image_canvas, download_successful_label
     selected_filepath = filedialog.askopenfilename()
     if selected_filepath:
         file_path_entry_field.delete(0, END)  # Remove text from entry when new image will be selected
         file_path_entry_field.insert(0, selected_filepath)  # Fill in file path
         image_file_path = selected_filepath  # Store filepath in a global variable to enable other function to use it
 
+    # Change canvas images
+    original_image_canvas.delete("all")  # Clear the canvas
+    original_image_canvas.create_image(0, 0, anchor='nw', image=img_icon)
+
+    watermarked_image_canvas.delete("all")  # Clear the canvas
+    watermarked_image_canvas.create_image(0, 0, anchor='nw', image=img_icon)
+
+    # Remove Download Successful Label
+    if download_successful_label:
+        download_successful_label.destroy()
+
 
 def add_watermark(img):
+    global download_image_button
     # Get watermark text
     watermark_text = watermark_entry_field.get()
 
@@ -65,7 +76,7 @@ def add_watermark(img):
     width, height = original_image.size
 
     # Define the watermark font, color, and position
-    font = ImageFont.truetype("static/assets/fonts/Newretrostyle3d-ygjm.ttf", 100)
+    font = ImageFont.truetype("static/assets/fonts/arial.ttf", 100)
     fill_color = (203, 201, 201)
     position = (width // 2 - 50, height // 2 - 50)
 
@@ -107,15 +118,17 @@ def add_watermark(img):
 
 
 def download_image():
-    filename = os.path.basename("./output/watermarked_image.jpg") # Get filename from image path
-    destination_dir = os.path.join(os.path.expanduser('~'), 'Downloads') # specify destination directory
-    destination_file_path = os.path.join(destination_dir, filename) # Construct the destination file path
-    shutil.copy2("./output/watermarked_image.jpg", destination_file_path) # Copy image to folder
+    global download_successful_label
+    filename = os.path.basename("./output/watermarked_image.jpg")  # Get filename from image path
+    destination_dir = os.path.join(os.path.expanduser('~'), 'Downloads')  # specify destination directory
+    destination_file_path = os.path.join(destination_dir, filename)  # Construct the destination file path
+    shutil.copy2("./output/watermarked_image.jpg", destination_file_path)  # Copy image to folder
 
-    if download_image_button:
+    if download_image_button is not None:
         download_image_button.destroy()
 
-    download_successful_label = Label(text=f"Image downloaded to: Downloads", fg="white", bg=ORANGE, font=(FONT_NAME, 8))
+    download_successful_label = Label(text=f"Image downloaded to: Downloads", fg=BLUE, bg=BEIGE,
+                                      font=(FONT_NAME, 8))
     download_successful_label.grid(row=2, column=2)
 
 
