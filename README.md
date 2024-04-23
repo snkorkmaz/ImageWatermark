@@ -18,6 +18,11 @@ This is a simple Python application that allows users to add watermarks to their
 ## How to Run
 
 1. Clone this repository to your local machine.
+
+```bash
+git clone https://github.com/snkorkmaz/ImageWatermark.git
+```
+
 2. Install the required dependencies by running:
 
 ```bash
