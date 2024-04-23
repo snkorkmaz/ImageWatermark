@@ -26,6 +26,10 @@ download_successful_label = None
 # ---------------------------- FUNCTIONS ------------------------------- #
 
 def upload_image(img):
+    """
+        Uploads the image from the selected file path and updates the canvas to display the uploaded image.
+    """
+
     global image_file_path, original_image_canvas
     if image_file_path:
         # Open the image file
@@ -44,8 +48,8 @@ def upload_image(img):
 
 def choose_filepath(event):
     """
-    Opens a file dialog to allow the user to choose a file path and returns the selected file path, or an empty string
-    if no file is selected.
+        Opens a file dialog to allow the user to choose a file path and returns the selected file path, or an empty string
+        if no file is selected.
     """
     global image_file_path, original_image_canvas, watermarked_image_canvas, download_successful_label
     selected_filepath = filedialog.askopenfilename()
@@ -67,7 +71,13 @@ def choose_filepath(event):
 
 
 def add_watermark(img):
+    """
+       Adds a watermark to the selected image, displays the watermarked image on the canvas, and provides an option to
+       download it.
+    """
+
     global download_image_button
+
     # Get watermark text
     watermark_text = watermark_entry_field.get()
 
@@ -118,6 +128,9 @@ def add_watermark(img):
 
 
 def download_image():
+    """
+        Copies the watermarked image to the user's Downloads folder and updates the UI accordingly.
+    """
     global download_successful_label
     filename = os.path.basename("./output/watermarked_image.jpg")  # Get filename from image path
     destination_dir = os.path.join(os.path.expanduser('~'), 'Downloads')  # specify destination directory
